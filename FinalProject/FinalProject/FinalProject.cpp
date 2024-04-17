@@ -21,8 +21,8 @@ public:
     bool IsEmpty();
     int GetSize();
 
-    void AppendAtTail(int);
-    void InsertAtHead(int);
+    void AppendAtTail(T*);
+    void InsertAtHead(T*);
 
     void DeleteLastElem();
     void DeleteFirstElem();
@@ -62,12 +62,8 @@ template <typename T> int MySinglyList<T>::GetSize()
 }
 
 
-template <typename T> void MySinglyList<T>::AppendAtTail(int elem)
+template <typename T> void MySinglyList<T>::AppendAtTail(T* temp)
 {
-    T* temp = new T();
-    temp->data = elem;
-    temp->next = nullptr;
-
     if (this->IsEmpty())
     {
         head = temp;
@@ -83,11 +79,8 @@ template <typename T> void MySinglyList<T>::AppendAtTail(int elem)
     this->size++;
 }
 
-template <typename T> void MySinglyList<T>::InsertAtHead(int data) {
-    T* newNode = new T();
-    newNode->data = data;
-    newNode->next = nullptr;
-
+template <typename T> void MySinglyList<T>::InsertAtHead(T* newNode) {
+    
     if (this->head == nullptr) {
         this->head = newNode;
         this->tail = newNode;
@@ -109,7 +102,7 @@ template <typename T> void MySinglyList<T>::DisplayElements()
     }
     for (T* p = head; p != nullptr; p = p->next)
     {
-        cout << p->data << " ";
+        cout << p->medicareId<< " ";
     }
     cout << endl;
 }
@@ -150,13 +143,17 @@ template <typename T> void MySinglyList<T>::DeleteLastElem() {
     this->size--;
 }
 
-
+typedef std::string String;
 struct TreeNode {
-    string medicareId; // unique identifier cannot be duplicated
+    String medicareId; // unique identifier cannot be duplicated
     int directContacts = 0; // no. of children a node has, default 0
     int totalCases = 1; // no. of nodes rooted at this tree node including self
     TreeNode* parentPtr; // pointer to the parent node
-    MySinglyList<TreeNode*> directContactsPtrList; // list of pointers to children nodes
+    MySinglyList<TreeNode>* directContactsPtrList; // list of pointers to children nodes
+    TreeNode* next = nullptr;
+    TreeNode(String medId) { medicareId = medId; parentPtr = nullptr; };
+    TreeNode(TreeNode* parentPtr, String medId) { medicareId = medId; parentPtr = parentPtr; };
+
 };
 
 
@@ -164,7 +161,13 @@ struct TreeNode {
 int main()
 {
     std::cout << "Hello \n";
-    MySinglyList<TreeNode>* myFirstList = new MySinglyList<TreeNode>();
-    cout<<myFirstList->GetSize();
+    MySinglyList<TreeNode>* myList = new MySinglyList<TreeNode>();
+    cout<<myList->GetSize();
+    TreeNode* one = new TreeNode("1");
+    myList->AppendAtTail(one);
+    TreeNode* two = new TreeNode("2");
+    two->medicareId = "4";
+    myList->InsertAtHead(two);
+    myList->DisplayElements();
 }
 
