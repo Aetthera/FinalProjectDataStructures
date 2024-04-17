@@ -157,6 +157,40 @@ struct TreeNode {
 };
 
 
+class ContactTree {
+private:
+    TreeNode* root;
+    int size;
+    
+public :
+    ContactTree();
+    ~ContactTree();
+    bool IsEmpty();
+    int GetSize();
+    void AddPatient0(String medId);
+    void AddContact(String parentId, String childId);
+    TreeNode* LookUpContact(String id);
+    void DeleteContact(String id);
+    void DisplayContact(String id);
+    void DisplayContact(TreeNode*);
+    void Tracesource(String id);
+    void PrintContactCases(String id);
+    void PrintContactTree();
+    void PrintHierarchicalTree();
+};
+
+
+ContactTree::ContactTree(){
+    this->root =nullptr;
+    this->size = 0;
+}
+
+bool ContactTree::IsEmpty() {
+    return root == nullptr;
+}
+
+int ContactTree::GetSize() { return this->size; }
+
 
 int main()
 {
