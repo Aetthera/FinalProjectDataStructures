@@ -3,145 +3,10 @@
 
 #include <iostream>
 #include <string>
+#include <list>
+#include <queue>
+#include <iterator>
 using namespace std;
-
-
-
-template <typename T> class MySinglyList
-{
-private:
-    T* head;
-    T* tail;
-    int size;
-
-public:
-    MySinglyList();
-    ~MySinglyList();
-
-    bool IsEmpty();
-    int GetSize();
-
-    void AppendAtTail(T*);
-    void InsertAtHead(T*);
-
-    void DeleteLastElem();
-    void DeleteFirstElem();
-
-    void DisplayElements();
-};
-
-
-template <typename T> MySinglyList<T>::MySinglyList()
-{
-    this->head = nullptr;
-    this->tail = nullptr;
-    this->size = 0;
-}
-
-template <typename T> MySinglyList<T>::~MySinglyList()
-{
-    T* p = this->head;
-    while (this->head != nullptr) {
-        p = this->head;
-        this->head = this->head->next;
-        delete(p);
-
-    }
-    this->tail = nullptr;
-    this->size = 0;
-}
-
-template <typename T> bool MySinglyList<T>::IsEmpty()
-{
-    return this->size == 0;
-}
-
-template <typename T> int MySinglyList<T>::GetSize()
-{
-    return this->size;
-}
-
-
-template <typename T> void MySinglyList<T>::AppendAtTail(T* temp)
-{
-    if (this->IsEmpty())
-    {
-        head = temp;
-        // InsertAtHead(elem)
-    }
-
-    else
-    {
-        tail->next = temp;
-    }
-
-    tail = temp;
-    this->size++;
-}
-
-template <typename T> void MySinglyList<T>::InsertAtHead(T* newNode) {
-    
-    if (this->head == nullptr) {
-        this->head = newNode;
-        this->tail = newNode;
-        this->size++;
-        return;
-    }
-    (newNode)->next = this->head;
-    this->head = newNode;
-    this->size++;
-}
-
-
-
-template <typename T> void MySinglyList<T>::DisplayElements()
-{
-    if (this->size == 0) {
-        cout << "The list is empty" << endl;
-        return;
-    }
-    for (T* p = head; p != nullptr; p = p->next)
-    {
-        cout << p->medicareId<< " ";
-    }
-    cout << endl;
-}
-
-template <typename T> void MySinglyList<T>::DeleteFirstElem() {
-    if (this->size == 0) {
-        cout << "The list is empty" << endl;
-        return;
-    }
-
-    if (this->size == 1) {
-        delete(this->head);
-        this->tail = nullptr;
-        this->size--;
-        return;
-    }
-
-    T* temp = this->head;
-    this->head = this->head->next;
-    delete(temp);
-    this->size--;
-}
-
-template <typename T> void MySinglyList<T>::DeleteLastElem() {
-    T* temp = this->head;
-
-    if (this->size <= 1) {
-        DeleteFirstElem();
-        return;
-    }
-    while (temp->next != this->tail) {
-        temp = temp->next;
-    }
-    temp->next = nullptr;
-    delete(this->tail);
-    this->tail = temp;
-
-    this->size--;
-}
 
 typedef std::string String;
 struct TreeNode {
@@ -149,8 +14,7 @@ struct TreeNode {
     int directContacts = 0; // no. of children a node has, default 0
     int totalCases = 1; // no. of nodes rooted at this tree node including self
     TreeNode* parentPtr; // pointer to the parent node
-    MySinglyList<TreeNode>* directContactsPtrList; // list of pointers to children nodes
-    TreeNode* next = nullptr;
+    list<TreeNode*> directContactsPtrList; // list of pointers to children nodes
     TreeNode(String medId) { medicareId = medId; parentPtr = nullptr; };
     TreeNode(TreeNode* parentPtr, String medId) { medicareId = medId; parentPtr = parentPtr; };
 
@@ -191,17 +55,85 @@ bool ContactTree::IsEmpty() {
 
 int ContactTree::GetSize() { return this->size; }
 
+void ContactTree::AddPatient0(String medId) {
+    if (IsEmpty()) {
+        TreeNode* newNode = new TreeNode(medId);
+        root = newNode;
+    }
+}
+
+void ContactTree::AddContact(String parentId, String childId) {
+    if (IsEmpty()) {
+        AddPatient0(childId);
+        return;
+    }
+
+    TreeNode* parent = LookUpContact(parentId);
+    if (parent == nullptr) {
+        cout << "parent is not in the list" << endl;
+        return;
+    }
+    TreeNode* newNode = new TreeNode(parent, childId);
+    root->directContactsPtrList.push_back(newNode);
+}
+
+TreeNode* ContactTree::LookUpContact(String id) { 
+    queue<TreeNode*> q;
+    
+    q.push(root);
+
+    while(q.empty() == false){
+        TreeNode* node = q.front();
+        q.pop();
+
+        if (node->medicareId == id) { return node; }
+
+        list<TreeNode*>::iterator it;
+        for (it = node->directContactsPtrList.begin(); it != node->directContactsPtrList.end();++it) {
+            q.push(*it);
+        }
+    }
+
+    return nullptr;
+}
+
+
+
+void ContactTree::PrintHierarchicalTree() {
+    queue<TreeNode*> q;
+
+    q.push(root);
+
+    while (q.empty() == false) {
+        TreeNode* node = q.front();
+        cout << node->medicareId << endl;
+        q.pop();
+
+
+        list<TreeNode*>::iterator it;
+        for (it = node->directContactsPtrList.begin(); it != node->directContactsPtrList.end();++it) {
+            q.push(*it);
+        }
+    }
+
+}
+
+
 
 int main()
 {
     std::cout << "Hello \n";
-    MySinglyList<TreeNode>* myList = new MySinglyList<TreeNode>();
-    cout<<myList->GetSize();
-    TreeNode* one = new TreeNode("1");
-    myList->AppendAtTail(one);
-    TreeNode* two = new TreeNode("2");
-    two->medicareId = "4";
-    myList->InsertAtHead(two);
-    myList->DisplayElements();
+    
+    cout << "\n\n\n";
+
+    ContactTree* contactTree = new ContactTree();
+    contactTree->AddPatient0("A");
+    contactTree->AddContact("A","B");
+    contactTree->AddContact("A", "C");
+    contactTree->AddContact("B", "D");
+    contactTree->AddContact("B", "E");
+    contactTree->AddContact("B", "F");
+    contactTree->AddContact("C", "H");
+    contactTree->PrintHierarchicalTree();
 }
 
