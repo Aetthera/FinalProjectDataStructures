@@ -16,7 +16,7 @@ struct TreeNode {
     TreeNode* parentPtr; // pointer to the parent node
     list<TreeNode*> directContactsPtrList; // list of pointers to children nodes
     TreeNode(String medId) { medicareId = medId; parentPtr = nullptr; };
-    TreeNode(TreeNode* parentPtr, String medId) { medicareId = medId; parentPtr = parentPtr; };
+    TreeNode(TreeNode* parentPt, String medId) { medicareId = medId; parentPtr = parentPt; };
 
 };
 
@@ -64,7 +64,7 @@ void ContactTree::AddPatient0(String medId) {
 
 void ContactTree::AddContact(String parentId, String childId) {
     if (IsEmpty()) {
-        AddPatient0(childId);
+        cout << "The tree is empty" << endl;
         return;
     }
 
@@ -119,6 +119,21 @@ void ContactTree::DisplayContact(TreeNode* node) {
     cout << endl<<endl;
 }
 
+void ContactTree::Tracesource(String id) {
+    TreeNode* node = LookUpContact(id);
+    if (node == nullptr) {
+        cout << "The patient does not exist";
+        return;
+    }
+
+    cout << "Tracing " << id << " source" << endl;
+    while (node != nullptr) {
+        DisplayContact(node);
+        node = node->parentPtr;
+    }
+}
+
+
 void ContactTree::PrintHierarchicalTree() {
     queue<TreeNode*> q;
 
@@ -159,5 +174,8 @@ int main()
 
     cout << "\n\n\n";
     contactTree->DisplayContact("Z");
+
+    cout << "\n\n\n";
+    contactTree->Tracesource("A");
 }
 
