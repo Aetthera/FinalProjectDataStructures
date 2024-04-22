@@ -101,7 +101,21 @@ TreeNode* ContactTree::LookUpContact(String id) {
     return nullptr;
 }
 
+void ContactTree::DisplayContact(String id) {
+    TreeNode* node = LookUpContact(id);
+    if (node == nullptr) {
+        cout << "The patient does not exist";
+        return;
+    }
 
+    DisplayContact(node);
+}
+
+void ContactTree::DisplayContact(TreeNode* node) {
+    cout<<"Medicare id: " << node->medicareId << endl;
+    cout << "Direct contacts: " << node->directContacts << endl;
+    cout << "Total cases: " << node->totalCases << endl;
+}
 
 void ContactTree::PrintHierarchicalTree() {
     queue<TreeNode*> q;
@@ -140,5 +154,8 @@ int main()
     contactTree->AddContact("K", "B");
     contactTree->AddContact("A", "O");
     contactTree->PrintHierarchicalTree();
+
+    cout << "\n\n\n";
+    contactTree->DisplayContact("K");
 }
 
