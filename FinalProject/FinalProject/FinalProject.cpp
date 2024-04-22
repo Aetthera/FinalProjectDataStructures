@@ -133,6 +133,22 @@ void ContactTree::Tracesource(String id) {
     }
 }
 
+void ContactTree::PrintContactCases(String id) {
+    TreeNode* node = LookUpContact(id);
+    if (node == nullptr) {
+        cout << "The patient does not exist";
+        return;
+    }
+    cout << id << " direct contacts:" << endl;
+    list<TreeNode*>::iterator it;
+    for (it = node->directContactsPtrList.begin(); it != node->directContactsPtrList.end();++it) {
+        DisplayContact(*it);
+    }
+}
+
+
+
+
 
 void ContactTree::PrintHierarchicalTree() {
     queue<TreeNode*> q;
@@ -177,5 +193,9 @@ int main()
 
     cout << "\n\n\n";
     contactTree->Tracesource("A");
+    contactTree->Tracesource("L");
+
+    cout << "\n\n\n";
+    contactTree->PrintContactCases("K");
 }
 
