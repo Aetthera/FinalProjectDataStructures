@@ -74,10 +74,14 @@ void ContactTree::AddContact(String parentId, String childId) {
         return;
     }
     TreeNode* newNode = new TreeNode(parent, childId);
-    root->directContactsPtrList.push_back(newNode);
+    parent->directContactsPtrList.push_back(newNode);
 }
 
 TreeNode* ContactTree::LookUpContact(String id) { 
+    if (root == nullptr) {
+        cout << "The contact tree is empty" << endl;
+        return nullptr;
+    }
     queue<TreeNode*> q;
     
     q.push(root);
@@ -128,12 +132,13 @@ int main()
 
     ContactTree* contactTree = new ContactTree();
     contactTree->AddPatient0("A");
-    contactTree->AddContact("A","B");
-    contactTree->AddContact("A", "C");
-    contactTree->AddContact("B", "D");
-    contactTree->AddContact("B", "E");
-    contactTree->AddContact("B", "F");
-    contactTree->AddContact("C", "H");
+    contactTree->AddContact("A","Z");
+    contactTree->AddContact("A", "K");
+    contactTree->AddContact("Z", "Y");
+    contactTree->AddContact("Z", "M");
+    contactTree->AddContact("K", "L");
+    contactTree->AddContact("K", "B");
+    contactTree->AddContact("A", "O");
     contactTree->PrintHierarchicalTree();
 }
 
