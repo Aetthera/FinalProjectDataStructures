@@ -75,6 +75,7 @@ void ContactTree::AddContact(String parentId, String childId) {
     }
     TreeNode* newNode = new TreeNode(parent, childId);
     parent->directContactsPtrList.push_back(newNode);
+    parent->directContacts++;
 }
 
 TreeNode* ContactTree::LookUpContact(String id) { 
@@ -115,6 +116,7 @@ void ContactTree::DisplayContact(TreeNode* node) {
     cout<<"Medicare id: " << node->medicareId << endl;
     cout << "Direct contacts: " << node->directContacts << endl;
     cout << "Total cases: " << node->totalCases << endl;
+    cout << endl<<endl;
 }
 
 void ContactTree::PrintHierarchicalTree() {
@@ -156,6 +158,6 @@ int main()
     contactTree->PrintHierarchicalTree();
 
     cout << "\n\n\n";
-    contactTree->DisplayContact("K");
+    contactTree->DisplayContact("Z");
 }
 
