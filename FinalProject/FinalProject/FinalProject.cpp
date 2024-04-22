@@ -147,7 +147,30 @@ void ContactTree::PrintContactCases(String id) {
 }
 
 
+void ContactTree::PrintContactTree() {
+    if (root == nullptr) {
+        cout << "The contact tree is empty" << endl;
+        return;
+    }
+    queue<TreeNode*> q;
 
+    q.push(root);
+    
+    cout << "Printing contact tree" << endl;
+    while (q.empty() == false) {
+        TreeNode* node = q.front();
+        q.pop();
+
+        DisplayContact(node);
+
+        list<TreeNode*>::iterator it;
+        for (it = node->directContactsPtrList.begin(); it != node->directContactsPtrList.end();++it) {
+            q.push(*it);
+        }
+    }
+
+    return;
+}
 
 
 void ContactTree::PrintHierarchicalTree() {
@@ -197,5 +220,8 @@ int main()
 
     cout << "\n\n\n";
     contactTree->PrintContactCases("K");
+
+    cout << "\n\n\n";
+    contactTree->PrintContactTree();
 }
 
