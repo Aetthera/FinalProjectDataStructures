@@ -6,6 +6,7 @@
 #include <list>
 #include <queue>
 #include <iterator>
+#include <stack>
 using namespace std;
 
 typedef std::string String;
@@ -83,6 +84,8 @@ TreeNode* ContactTree::LookUpContact(String id) {
         cout << "The contact tree is empty" << endl;
         return nullptr;
     }
+
+    // Implementing breath first search
     queue<TreeNode*> q;
     
     q.push(root);
@@ -174,21 +177,22 @@ void ContactTree::PrintContactTree() {
 
 
 void ContactTree::PrintHierarchicalTree() {
-    queue<TreeNode*> q;
+    
+    // Implementing depth first search
+    stack<TreeNode*> s;
+    s.push(root);
 
-    q.push(root);
-
-    while (q.empty() == false) {
-        TreeNode* node = q.front();
+    while (s.empty() == false) {
+        TreeNode* node = s.top();
         cout << node->medicareId << endl;
-        q.pop();
-
+        s.pop();
 
         list<TreeNode*>::iterator it;
         for (it = node->directContactsPtrList.begin(); it != node->directContactsPtrList.end();++it) {
-            q.push(*it);
+            s.push(*it);
         }
     }
+
 
 }
 
@@ -196,7 +200,6 @@ void ContactTree::PrintHierarchicalTree() {
 
 int main()
 {
-    std::cout << "Hello \n";
     
     cout << "\n\n\n";
 
@@ -209,9 +212,8 @@ int main()
     contactTree->AddContact("K", "L");
     contactTree->AddContact("K", "B");
     contactTree->AddContact("A", "O");
-    contactTree->PrintHierarchicalTree();
 
-    cout << "\n\n\n";
+    /*cout << "\n\n\n";
     contactTree->DisplayContact("Z");
 
     cout << "\n\n\n";
@@ -222,6 +224,11 @@ int main()
     contactTree->PrintContactCases("K");
 
     cout << "\n\n\n";
-    contactTree->PrintContactTree();
+    contactTree->PrintContactTree();*/
+
+    cout << "\n\n\n";
+    contactTree->PrintHierarchicalTree();
+
+
 }
 
