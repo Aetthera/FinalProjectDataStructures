@@ -265,6 +265,41 @@ void ContactTree::DecrementTotalCases(int num, TreeNode* node) {
     }
 }
 
+ContactTree::~ContactTree() {
+    if (root == nullptr) {
+        return;
+    }
+
+
+    queue<TreeNode*> q;
+    stack<TreeNode*> s;
+
+    // Transverse the subtree by breath first search. Push each node to the stack.
+    q.push(root);
+
+    while (q.empty() == false) {
+        TreeNode* node = q.front();
+        q.pop();
+        s.push(node);
+
+        list<TreeNode*>::iterator it;
+        for (it = node->directContactsPtrList.begin(); it != node->directContactsPtrList.end();++it) {
+            q.push(*it);
+        }
+    }
+
+    // Delete each node from the stack
+    while (s.empty() == false) {
+        TreeNode* node = s.top();
+        s.pop();
+
+        delete(node);
+    }
+
+
+    return;
+}
+
 int main()
 {
     
@@ -300,5 +335,7 @@ int main()
 
     cout << "\n\n\n";
     contactTree->PrintContactTree();
+
+    delete(contactTree);
 }
 
