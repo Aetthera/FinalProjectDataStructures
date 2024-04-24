@@ -27,6 +27,7 @@ private:
     TreeNode* root;
     int size;
     void IncrementTotalCases(TreeNode*);
+    void DecrementTotalCases(int,TreeNode*);
 public :
     ContactTree();
     ~ContactTree();
@@ -103,6 +104,7 @@ TreeNode* ContactTree::LookUpContact(String id) {
         }
     }
 
+
     return nullptr;
 }
 
@@ -178,7 +180,11 @@ void ContactTree::PrintContactTree() {
 
 
 void ContactTree::PrintHierarchicalTree() {
-    
+    if (root == nullptr) {
+        cout << "The contact tree is empty" << endl;
+        return;
+    }
+
     // Implementing depth first search
     stack<TreeNode*> s;
     s.push(root);
@@ -201,6 +207,60 @@ void ContactTree::IncrementTotalCases(TreeNode* node){
     node = node->parentPtr;
     while (node != nullptr) {
         node->totalCases++;
+        node = node->parentPtr;
+    }
+}
+
+void ContactTree::DeleteContact(String id) {
+    TreeNode* subNode = LookUpContact(id);
+
+    if (subNode == nullptr) {
+        cout << "The patient to be deleted was not found" << endl;
+        return;
+    }
+
+    queue<TreeNode*> q; 
+    stack<TreeNode*> s;
+
+    // Transverse the subtree by breath first search. Push each node to the stack.
+    q.push(subNode);
+
+    while (q.empty() == false) {
+        TreeNode* node = q.front();
+        q.pop();
+        s.push(node);
+
+        list<TreeNode*>::iterator it;
+        for (it = node->directContactsPtrList.begin(); it != node->directContactsPtrList.end();++it) {
+            q.push(*it);
+        }
+    }
+
+    int casesDeleted = 0;
+    TreeNode* parentSubNode = subNode->parentPtr;
+    // Delete each node from the stack
+    while (s.empty() == false) {
+        TreeNode* node = s.top();
+        s.pop();
+
+        // Delete node from parent
+        node->parentPtr->directContactsPtrList.remove(node);
+
+        // Decrement directCases
+        node->parentPtr->directContacts--;
+
+        delete(node);
+        casesDeleted++;
+    }
+
+    DecrementTotalCases(casesDeleted, parentSubNode);
+
+    return;
+}
+
+void ContactTree::DecrementTotalCases(int num, TreeNode* node) {
+    while (node != nullptr) {
+        node->totalCases -= num;
         node = node->parentPtr;
     }
 }
@@ -236,6 +296,9 @@ int main()
     cout << "\n\n\n";
     contactTree->PrintHierarchicalTree();
 
+    contactTree->DeleteContact("K");
 
+    cout << "\n\n\n";
+    contactTree->PrintContactTree();
 }
 
