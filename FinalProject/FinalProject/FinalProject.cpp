@@ -26,7 +26,7 @@ class ContactTree {
 private:
     TreeNode* root;
     int size;
-    
+    void IncrementTotalCases(TreeNode*);
 public :
     ContactTree();
     ~ContactTree();
@@ -77,6 +77,7 @@ void ContactTree::AddContact(String parentId, String childId) {
     TreeNode* newNode = new TreeNode(parent, childId);
     parent->directContactsPtrList.push_back(newNode);
     parent->directContacts++;
+    IncrementTotalCases(newNode);
 }
 
 TreeNode* ContactTree::LookUpContact(String id) { 
@@ -196,7 +197,13 @@ void ContactTree::PrintHierarchicalTree() {
 
 }
 
-
+void ContactTree::IncrementTotalCases(TreeNode* node){
+    node = node->parentPtr;
+    while (node != nullptr) {
+        node->totalCases++;
+        node = node->parentPtr;
+    }
+}
 
 int main()
 {
@@ -221,10 +228,10 @@ int main()
     contactTree->Tracesource("L");
 
     cout << "\n\n\n";
-    contactTree->PrintContactCases("K");
+    contactTree->PrintContactCases("K");*/
 
     cout << "\n\n\n";
-    contactTree->PrintContactTree();*/
+    contactTree->PrintContactTree();
 
     cout << "\n\n\n";
     contactTree->PrintHierarchicalTree();
